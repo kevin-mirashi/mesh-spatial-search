@@ -1,0 +1,120 @@
+% !TeX ltex: language=fr
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage[french]{babel}
+
+\synctex=1
+
+% pas d'indentation en début de paragraphe
+\setlength{\parindent}{0pt}
+% ... mais un petit espace entre les paragraphes
+\setlength{\parskip}{1ex plus 0.5ex minus 0.2ex}
+
+% listing parameters (use scriptsize font)
+\lstset{
+  basicstyle=\ttfamily\scriptsize,
+  breaklines=true,
+  frame=single,
+  numbers=left,
+  numberstyle=\tiny,
+  stepnumber=1,
+  numbersep=5pt,
+  showspaces=false,
+  showstringspaces=false,
+  tabsize=2,
+  captionpos=b,
+  escapeinside={(*@}{@*)},
+  literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1 {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1 {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1 {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1 {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1 {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1 {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1 {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1 {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1 {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1 {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1 {€}{{\EUR}}1 {£}{{\pounds}}1
+}
+
+\lstdefinelanguage{cmake}{
+  keywords={
+    project, cmake\_minimum\_required, add\_executable, add\_library,
+    target\_link\_libraries, include\_directories, find\_package, find\_library,
+    find\_path, find\_file, set, message, option, if, elseif, else, endif,
+    foreach, endforeach, while, endwhile, function, endfunction, macro,
+    endmacro, install, configure\_file, add\_subdirectory, include,
+    file, list, string, target\_include\_directories, target\_compile\_options,
+    target\_compile\_definitions, target\_sources
+  },
+  keywordstyle=\color{blue}\bfseries,
+  morecomment=[l]{\#},  % Line comments start with #
+  commentstyle=\color{gray}\ttfamily,
+  morestring=[b]",      % Double-quoted strings
+  morestring=[b]',      % Single-quoted strings
+  stringstyle=\color{red}\ttfamily,
+  sensitive=true        % CMake is case-sensitive
+}
+
+\title{Travaux Pratiques : Manipulation de Maillages en C++}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Programmes fournis}
+
+Le code fourni comprend une classe \texttt{Mesh} qui représente un maillage 2D composé de nœuds et de triangles. Le maillage est lu à partir d'un fichier au format Gmsh (.msh). Le programme principal lit un fichier de maillage nommé \texttt{square.msh} et génère un fichier lisible par Gnuplot pour visualiser le maillage.
+
+Pour compiler et lancer le programme, utilisez les commandes suivantes dans le terminal :
+\begin{verbatim}
+mkdir build
+cd build
+cmake ..
+make
+./go
+gnuplot gnu.plt
+\end{verbatim}
+
+Pour générer un maillage plus fin, modifier le paramètre \texttt{raf} du fichier \texttt{square.geo} et relancer Gmsh. Puis taper (dans le bon dossier) :
+\begin{verbatim}
+gmsh square.geo -format msh2 -2 -o square.msh
+\end{verbatim}
+
+\section{Questions}
+
+\subsection{Écrire une fonction naïve pour trouver le triangle contenant un point}
+
+Écrivez une fonction qui, étant donné un point, retrouve le numéro d'un triangle qui le contient. Commencez par une fonction naïve qui parcourt tous les triangles du maillage.
+
+\subsection{Écrire une fonction efficace utilisant une hashmap}
+
+Écrivez une fonction plus efficace qui utilise une hashmap pour accélérer la recherche du triangle contenant un point. Vous pouvez découper l'espace en un quadrillage dont le pas sera choisi judicieusement. Pour chaque carré, il faut construire la liste des triangles qui l'intersectent. Vérifiez l'accélération du nouvel algorithme par rapport à la version naïve en fonction de la finesse du maillage.
+
+\subsection{Écrire une fonction naïve pour trouver les triangles voisins}
+
+Écrivez une fonction qui construit la liste des triangles voisins d'un triangle donné par les arêtes. Commencez par une fonction naïve qui parcourt tous les triangles du maillage.
+
+\subsection{Écrire une fonction efficace utilisant une hashmap}
+
+Écrivez une fonction plus efficace qui utilise une hashmap pour accélérer la recherche des triangles voisins. Vérifiez l'accélération du nouvel algorithme par rapport à la version naïve en fonction de la finesse du maillage.
+
+\section{Annexes}
+
+\subsection{Code fourni}
+
+\subsubsection{CMakeLists.txt}
+\lstinputlisting[language=cmake]{../CMakeLists.txt}
+
+\subsubsection{src/msh.h}
+\lstinputlisting[language=c++]{../src/msh.h}
+
+\subsubsection{src/msh.cpp}
+\lstinputlisting[language=c++]{../src/msh.cpp}
+
+\subsubsection{src/main.cpp}
+\lstinputlisting[language=c++]{../src/main.cpp}
+
+\subsubsection{square.geo}
+\lstinputlisting[language=c++]{../square.geo}
+
+\end{document}
