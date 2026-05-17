@@ -32,3 +32,13 @@ En mémoire, la classe `Mesh` utilise des structures de la bibliothèque standar
 Le programme principal `src/main.cpp` réalise les opérations suivantes :
 1. Il instancie l'objet `Mesh` en important le fichier de géométrie standard `../square.msh`. Le constructeur ouvre, parse et charge les données du fichier textuel en mémoire.
 2. Il appelle la méthode de classe `m.writeGnuplot("gnu.plt");`. Cette fonction parcourt séquentiellement le tableau des triangles pour écrire leurs sommets dans un fichier script lisible par Gnuplot. L'instruction `set size ratio -1` y est insérée afin de préserver l'échelle géométrique réelle (1:1) lors de l'affichage à l'écran.
+
+### 3.2 Recherche simple
+L'algorithme de recherche naïve parcourt l'intégralité du tableau `triangle` (complexité algorithmique en $O(N)$ où $N$ est le nombre de triangles). 
+
+Pour déterminer si le point $P(x,y)$ se trouve à l'intérieur d'un triangle $T$ formé par les sommets $P_0, P_1, P_2$, nous utilisons le signe du produit vectoriel 2D pour chaque arête orientée :
+* $CP_1 = (X_1 - X_0)(Y_P - Y_0) - (Y_1 - Y_0)(X_P - X_0)$
+* $CP_2 = (X_2 - X_1)(Y_P - Y_1) - (Y_2 - Y_1)(X_P - X_1)$
+* $CP_3 = (X_0 - X_2)(Y_P - Y_2) - (Y_0 - Y_2)(X_P - X_2)$
+
+Si $CP_1, CP_2$ et $CP_3$ possèdent tous le même signe (tous positifs ou tous négatifs), le point se situe nécessairement à l'intérieur de l'élément (ou sur sa frontière). Si aucun triangle ne valide cette condition, la fonction retourne `-1`.
