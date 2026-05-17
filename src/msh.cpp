@@ -92,3 +92,42 @@ ostream &operator<<(ostream &os, const Mesh &m)
     }
     return os;
 }
+
+
+int Mesh::findTriangleNaive(double x, double y) const
+{
+    // On parcourt tous les triangles du maillage
+    for (int i = 0; i < triangle.size(); i++)
+    {
+        // Récupération des coordonnées des 3 sommets du triangle i
+        double x0 = node[triangle[i][0]][0];
+        double y0 = node[triangle[i][0]][1];
+        
+        double x1 = node[triangle[i][1]][0];
+        double y1 = node[triangle[i][1]][1];
+        
+        double x2 = node[triangle[i][2]][0];
+        double y2 = node[triangle[i][2]][1];
+
+        // Calcul des composantes du produit vectoriel 2D pour chaque arête
+        // Arête 0 -> 1 avec le point P(x,y)
+        double cp1 = (x1 - x0) * (y - y0) - (y1 - y0) * (x - x0);
+        
+        // Arête 1 -> 2 avec le point P(x,y)
+        double cp2 = (x2 - x1) * (y - y1) - (y2 - y1) * (x - x1);
+        
+        // Arête 2 -> 0 avec le point P(x,y)
+        double cp3 = (x0 - x2) * (y - y2) - (y0 - y2) * (x - x2);
+
+        // Si les trois ont le même signe, le point est dans le triangle i
+        bool tous_positifs = (cp1 >= 0 && cp2 >= 0 && cp3 >= 0);
+        bool tous_negatifs = (cp1 <= 0 && cp2 <= 0 && cp3 <= 0);
+
+        if (tous_positifs || tous_negatifs)
+        {
+            return i; // On a trouvé le triangle, on renvoie son numéro
+        }
+    }
+
+    return -1; // Le point n'est dans aucun triangle
+}
