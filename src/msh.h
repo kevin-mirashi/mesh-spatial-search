@@ -19,6 +19,8 @@ public:
     friend ostream &operator<<(ostream &os, const Mesh &m);
     // affichage dans un fichier lisible par gnuplot
     void writeGnuplot(const string &filename) const;
+    // Question 3.2 : Recherche naive d'un triangle contenant le point (x, y)
+    int findTriangleNaive(double x, double y) const;
 };
 
 #endif
