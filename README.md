@@ -28,3 +28,7 @@ En mémoire, la classe `Mesh` utilise des structures de la bibliothèque standar
 
 *Remarque sur la lecture :* Les indices des nœuds dans le fichier `.msh` commencent à 1, alors que les conteneurs C++ commencent à 0. Le constructeur effectue donc une décrémentation systématique (`t[0]--;`, etc.) lors du chargement des triangles pour adapter la numérotation.
 
+#### C) Fonctionnement du programme de test
+Le programme principal `src/main.cpp` réalise les opérations suivantes :
+1. Il instancie l'objet `Mesh` en important le fichier de géométrie standard `../square.msh`. Le constructeur ouvre, parse et charge les données du fichier textuel en mémoire.
+2. Il appelle la méthode de classe `m.writeGnuplot("gnu.plt");`. Cette fonction parcourt séquentiellement le tableau des triangles pour écrire leurs sommets dans un fichier script lisible par Gnuplot. L'instruction `set size ratio -1` y est insérée afin de préserver l'échelle géométrique réelle (1:1) lors de l'affichage à l'écran.
