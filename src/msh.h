@@ -43,7 +43,7 @@ public:
     friend ostream &operator<<(ostream &os, const Mesh &m); 
     void writeGnuplot(const string &filename) const;
 
-    // --- Nouvelles fonctions à implémenter ---
+    
     void buildGrid(double step); // Construit la structure de grille
     int findTriangleHash(array<double, 2> p) const; // Recherche accélérée
 };

@@ -206,3 +206,27 @@ void Mesh::buildGrid(double step) {
         }
     }
 }
+
+
+
+int Mesh::findTriangleHash(array<double, 2> p) const {
+    // 1. Trouver les indices de la case (i, j) dans la grille
+    int i = static_cast<int>((p[0] - x_min) / h_grid);
+    int j = static_cast<int>((p[1] - y_min) / h_grid);
+
+    GridKey key{i, j};
+
+    // 2. Chercher la case dans la hashmap
+    auto it = grid.find(key);
+    if (it != grid.end()) {
+        // 3. Parcourir uniquement les triangles de cette case
+        const vector<int>& potential_triangles = it->second;
+        for (int t_idx : potential_triangles) {
+            if (isPointInTriangle(p, t_idx)) {
+                return t_idx; // On a trouvé le triangle !
+            }
+        }
+    }
+
+    return -1; // Le point n'est dans aucun triangle
+}
