@@ -131,3 +131,50 @@ int Mesh::findTriangleNaive(double x, double y) const
 
     return -1; // Le point n'est dans aucun triangle
 }
+
+
+void Mesh::buildGrid(double step) {
+    if (node.empty() || triangle.empty()) return;
+
+    h_grid = step;
+    grid.clear();
+
+    // 1. Trouver les bornes de la boîte englobante (Bounding Box)
+    x_min = x_max = node[0][0];
+    y_min = y_max = node[0][1];
+    for (const auto& n : node) {
+        if (n[0] < x_min) x_min = n[0];
+        if (n[0] > x_max) x_max = n[0];
+        if (n[1] < y_min) y_min = n[1];
+        if (n[1] > y_max) y_max = n[1];
+    }
+
+    // 2. Remplir la grille
+    // Pour chaque triangle, on détermine les cases intersectées par ses sommets
+    for (int t_idx = 0; t_idx < triangle.size(); ++t_idx) {
+        // On récupère les indices des 3 nœuds du triangle
+        int n0 = triangle[t_idx][0];
+        int n1 = triangle[t_idx][1];
+        int n2 = triangle[t_idx][2];
+
+        // Pour faire simple et robuste, on trouve la bounding box du triangle 't_idx'
+        double t_xmin = min({node[n0][0], node[n1][0], node[n2][0]});
+        double t_xmax = max({node[n0][0], node[n1][0], node[n2][0]});
+        double t_ymin = min({node[n0][1], node[n1][1], node[n2][1]});
+        double t_ymax = max({node[n0][1], node[n1][1], node[n2][1]});
+
+        // Convertir ces coordonnées physiques en indices de cases (i, j) dans la grille
+        int i_start = static_cast<int>((t_xmin - x_min) / h_grid);
+        int i_end   = static_cast<int>((t_xmax - x_min) / h_grid);
+        int j_start = static_cast<int>((t_ymin - y_min) / h_grid);
+        int j_end   = static_cast<int>((t_ymax - y_min) / h_grid);
+
+        // Assigner le triangle à toutes les cases qu'il touche potentiellement
+        for (int i = i_start; i <= i_end; ++i) {
+            for (int j = j_start; j <= j_end; ++j) {
+                GridKey key{i, j};
+                grid[key].push_back(t_idx);
+            }
+        }
+    }
+}
