@@ -55,6 +55,34 @@ Mesh::Mesh(string gmsh2_filename)
         }
     }
 };
+
+
+
+
+bool Mesh::isPointInTriangle(array<double, 2> p, int t_idx) const {
+    int n0 = triangle[t_idx][0];
+    int n1 = triangle[t_idx][1];
+    int n2 = triangle[t_idx][2];
+
+    // Coordonnées des sommets
+    double x0 = node[n0][0], y0 = node[n0][1];
+    double x1 = node[n1][0], y1 = node[n1][1];
+    double x2 = node[n2][0], y2 = node[n2][1];
+
+    // Calcul des produits vectoriels 2D (signe des orientations)
+    double d1 = (p[0] - x1) * (y0 - y1) - (x0 - x1) * (p[1] - y1);
+    double d2 = (p[0] - x2) * (y1 - y2) - (x1 - x2) * (p[1] - y2);
+    double d3 = (p[0] - x0) * (y2 - y0) - (x2 - x0) * (p[1] - y0);
+
+    bool has_neg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+    bool has_pos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+    // Le point est dans le triangle s'ils ont tous le même signe
+    return !(has_neg && has_pos);
+}
+
+
+
 // affichage dans un fichier lisible par gnuplot
 void Mesh::writeGnuplot(const string &filename) const
 {
