@@ -36,6 +36,8 @@ private:
     double h_grid;                    // Pas du quadrillage
     unordered_map<GridKey, vector<int>, GridKeyHash> grid; // Hashmap: Case -> Liste d'IDs de triangles
 
+    bool isPointInTriangle(array<double, 2> p, int t_idx) const;
+
 public:
     Mesh(string gmsh2_filename); 
     friend ostream &operator<<(ostream &os, const Mesh &m); 
