@@ -66,3 +66,17 @@ Les deux algorithmes coïncident parfaitement sur l'ensemble des requêtes (les 
 
 **Analyse critique :**
 L'approche par grille spatiale réduit drastiquement l'espace de recherche. Au lieu de parcourir l'intégralité des 350 triangles du domaine à chaque point (complexité linéaire), l'algorithme cible instantanément la cellule concernée grâce à la fonction de hachage en temps constant $O(1)$. Le nombre de tests d'inclusion se restreint aux seuls triangles intersectant cette cellule (3 à 4 triangles en moyenne), ce qui explique ce gain d'un facteur 26.
+
+
+### 3.4 Utilisation de bibliothèques alternatives
+
+#### A) Limites de la bibliothèque standard
+Bien que l'utilisation de `std::unordered_map` permette de passer d'une complexité de $O(N)$ à $O(1)$ en moyenne, sa structure interne repose sur un chaînage par pointeurs (chaque collision de hachage crée un nouveau nœud dynamique). Cela engendre une fragmentation de la mémoire et de nombreux défauts de cache (*cache misses*) lors des requêtes massives de points.
+
+#### B) Évaluation de `parallel-hashmap`
+Pour optimiser la structure, nous étudions l'intégration de la bibliothèque externe `parallel-hashmap` (développée par Gregory Popovitch et basée sur les *Swiss Tables* de Google). 
+
+**Avantages théoriques et techniques :**
+1. **Localisation des données :** Elle utilise un adressage ouvert où les clés et les valeurs sont stockées de manière contiguë dans des tableaux plats en mémoire. Le processeur peut charger efficacement les données dans ses caches L1/L2/L3.
+2. **Performance temporelle :** Lors d'un benchmark intensif avec l'allocation de millions de triangles, `parallel-hashmap` permet généralement de réduire encore le temps de recherche d'un facteur supplémentaire de 1.5x à 2x par rapport à `std::unordered_map`.
+3. **Consommation mémoire :** L'absence de pointeurs de chaînage réduit l'empreinte mémoire globale de la grille spatiale de près de 30% à 50%.
