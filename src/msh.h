@@ -25,6 +25,17 @@ struct GridKeyHash {
     }
 };
 
+
+
+struct PairHash {
+    template <class T1, class T2>
+    size_t operator()(const pair<T1, T2>& p) const {
+        return hash<T1>()(p.first) ^ (hash<T2>()(p.second) << 1);
+    }
+};
+
+
+
 class Mesh
 {
 private:
@@ -46,6 +57,7 @@ public:
     
     void buildGrid(double step); // Construit la structure de grille
     int findTriangleHash(array<double, 2> p) const; // Recherche accélérée
+    void findVoisins() const;
 };
 
 #endif

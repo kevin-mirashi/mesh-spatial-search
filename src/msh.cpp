@@ -230,3 +230,47 @@ int Mesh::findTriangleHash(array<double, 2> p) const {
 
     return -1; // Le point n'est dans aucun triangle
 }
+
+
+#include <map>
+
+void Mesh::findVoisins() const {
+    // Table de hachage : Arête (paire triée de IDs de nœuds) -> Liste d'IDs de triangles
+    unordered_map<pair<int, int>, vector<int>, PairHash> edge_to_triangles;
+
+    // 1. Remplissage de la hashmap avec les arêtes de chaque triangle
+    for (size_t t_idx = 0; t_idx < triangle.size(); ++t_idx) {
+        int n0 = triangle[t_idx][0];
+        int n1 = triangle[t_idx][1];
+        int n2 = triangle[t_idx][2];
+
+        // Les 3 arêtes du triangle actuel (ordonnées pour éviter les problèmes d'orientation)
+        array<pair<int, int>, 3> edges = {
+            make_pair(min(n0, n1), max(n0, n1)),
+            make_pair(min(n1, n2), max(n1, n2)),
+            make_pair(min(n2, n0), max(n2, n0))
+        };
+
+        for (const auto& edge : edges) {
+            edge_to_triangles[edge].push_back(t_idx);
+        }
+    }
+
+    // 2. Analyse et affichage des résultats (Preuve de bon fonctionnement)
+    int frontieres = 0;
+    int internes = 0;
+
+    for (const auto& item : edge_to_triangles) {
+        if (item.second.size() == 1) {
+            frontieres++; // L'arête n'appartient qu'à un seul triangle
+        } else if (item.second.size() == 2) {
+            internes++;   // L'arête est partagée par deux triangles voisins
+        }
+    }
+
+    cout << "--- RESULTATS ALGORITHME DE RECHERCHE DE VOISINS (Q3.5) ---" << endl;
+    cout << "Total des aretes uniques traitees : " << edge_to_triangles.size() << endl;
+    cout << "Aretes sur la frontiere externe    : " << frontieres << endl;
+    cout << "Aretes internes (partagees)       : " << internes << endl;
+    cout << "--------------------------------------------------------" << endl;
+}
