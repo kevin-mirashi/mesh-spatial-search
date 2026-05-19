@@ -80,3 +80,24 @@ Pour optimiser la structure, nous étudions l'intégration de la bibliothèque e
 1. **Localisation des données :** Elle utilise un adressage ouvert où les clés et les valeurs sont stockées de manière contiguë dans des tableaux plats en mémoire. Le processeur peut charger efficacement les données dans ses caches L1/L2/L3.
 2. **Performance temporelle :** Lors d'un benchmark intensif avec l'allocation de millions de triangles, `parallel-hashmap` permet généralement de réduire encore le temps de recherche d'un facteur supplémentaire de 1.5x à 2x par rapport à `std::unordered_map`.
 3. **Consommation mémoire :** L'absence de pointeurs de chaînage réduit l'empreinte mémoire globale de la grille spatiale de près de 30% à 50%.
+
+
+
+### 3.5 Recherche des triangles voisins
+
+#### A) Définition et méthode naïve
+Deux triangles sont dits voisins s'ils partagent une arête commune, c'est-à-dire s'ils possèdent exactement deux nœuds identiques en commun. 
+
+Une approche **naïve** consisterait à comparer chaque triangle à tous les autres triangles du maillage. Pour chaque paire, on vérifierait le nombre de nœuds partagés.
+* **Complexité théorique :** Avec $N$ triangles, il y a $O(N^2)$ paires à comparer. Pour un maillage contenant des dizaines de milliers de triangles, cette approche devient extrêmement lente et inefficace.
+
+#### B) Approche optimisée par table de hachage (Hashmap)
+Pour descendre à une complexité linéaire $O(N)$, nous utilisons une table de hachage où la clé est une **arête** et la valeur est la liste des identifiants des triangles qui possèdent cette arête. Une arête reliant le nœud $A$ au nœud $B$ est représentée par une paire triée `std::pair<int, int>` avec $\min(A,B)$ et $\max(A,B)$ pour s'affranchir de l'orientation de parcours.
+
+**Algorithme :**
+1. On parcourt une seule fois tous les triangles du maillage ($O(N)$).
+2. Pour chaque triangle, on extrait ses 3 arêtes. On insère chaque arête dans la hashmap en lui associant l'ID du triangle actuel.
+3. À la fin du parcours, chaque arête de la table contient soit 1 seul triangle (arête sur la frontière extérieure du maillage), soit 2 triangles (arêtes internes partagées par deux triangles voisins).
+4. Il suffit ensuite de reparcourir les triangles pour remplir une structure adjacente indiquant, pour chaque triangle, ses voisins directs.
+
+Grâce à l'accès en temps constant $O(1)$ de la hashmap, la construction et la recherche se font en complexité globale **$O(N)$**, ce qui est optimal.
