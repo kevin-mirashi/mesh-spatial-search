@@ -58,6 +58,7 @@ public:
     void buildGrid(double step); // Construit la structure de grille
     int findTriangleHash(array<double, 2> p) const; // Recherche accélérée
     void findVoisins() const;
+    void findVoisinsNaive() const;
 };
 
 #endif

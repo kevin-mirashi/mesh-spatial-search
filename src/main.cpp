@@ -106,7 +106,7 @@ int main()
     cout << ">> Verification globale : Tous les resultats coïncident sur l'echantillon ! [OK]" << endl;
     cout << "==================================================" << endl;
     m.findVoisins();
-    // 4. Generation du fichier pour Gnuplot (Q3.1 / Q3.6)
+    m.findVoisinsNaive();
     m.writeGnuplot("gnu.plt");
     
     return 0;

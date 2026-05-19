@@ -274,3 +274,32 @@ void Mesh::findVoisins() const {
     cout << "Aretes internes (partagees)       : " << internes << endl;
     cout << "--------------------------------------------------------" << endl;
 }
+
+
+
+void Mesh::findVoisinsNaive() const {
+    int aretes_internes_naives = 0;
+
+    // Boucle double O(N^2) pour comparer chaque paire de triangles unique
+    for (size_t i = 0; i < triangle.size(); ++i) {
+        for (size_t j = i + 1; j < triangle.size(); ++j) {
+            // Compter le nombre de nœuds en commun entre le triangle i et le triangle j
+            int noeuds_communs = 0;
+            for (int ni = 0; ni < 3; ++ni) {
+                for (int nj = 0; nj < 3; ++nj) {
+                    if (triangle[i][ni] == triangle[j][nj]) {
+                        noeuds_communs++;
+                    }
+                }
+            }
+            // S'ils partagent exactement 2 nœuds, ils partagent une arête (ils sont voisins)
+            if (noeuds_communs == 2) {
+                aretes_internes_naives++;
+            }
+        }
+    }
+
+    cout << "--- VALIDATION METHODE NAÏVE (O(N^2)) ---" << endl;
+    cout << "Aretes internes trouvees (Naive) : " << aretes_internes_naives << endl;
+    cout << "--------------------------------------------------------" << endl;
+}
