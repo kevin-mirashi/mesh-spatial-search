@@ -116,7 +116,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#ifndef _WIN32
 #include <sys/time.h>
+#endif
+
+
+#ifdef _WIN32
+#define random rand
+#endif
 
 /* On some machines, the exact arithmetic routines might be defeated by the  */
 /*   use of internal extended precision floating-point registers.  Sometimes */
