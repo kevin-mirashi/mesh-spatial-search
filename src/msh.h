@@ -6,6 +6,7 @@
 #include <vector>
 #include <array>
 #include <unordered_map>
+#include "predicates.hpp"
 
 using namespace std;
 
