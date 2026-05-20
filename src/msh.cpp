@@ -1,5 +1,7 @@
 #include "msh.h"
 #include <cassert>
+#include <string>
+#include <map>
 
 // classe maillage 2d avec liste de noeuds et liste de triangles
 Mesh::Mesh(string gmsh2_filename)

@@ -5,11 +5,10 @@
 #include <fstream>
 #include <vector>
 #include <array>
-#include <unordered_map> // <-- Ajout pour la hashmap
+#include <unordered_map>
 
 using namespace std;
 
-// Structure pour servir de clé (i, j) dans notre grille
 struct GridKey {
     int i, j;
     bool operator==(const GridKey& other) const {
@@ -17,15 +16,11 @@ struct GridKey {
     }
 };
 
-// Foncteur de hachage personnalisé pour GridKey
 struct GridKeyHash {
     size_t operator()(const GridKey& k) const {
-        // Un hachage simple combinant les coordonnées i et j
         return hash<int>()(k.i) ^ (hash<int>()(k.j) << 1);
     }
 };
-
-
 
 struct PairHash {
     template <class T1, class T2>
@@ -34,29 +29,31 @@ struct PairHash {
     }
 };
 
-
-
 class Mesh
 {
 private:
-    vector<array<double, 2>> node; 
-    vector<array<int, 3>> triangle; 
+    vector<array<double, 2>> node;
+    vector<array<int, 3>> triangle;
 
-    // --- Nouveaux attributs pour la grille (Q3.3) ---
-    double x_min, x_max, y_min, y_max; // Limites du maillage
-    double h_grid;                    // Pas du quadrillage
-    unordered_map<GridKey, vector<int>, GridKeyHash> grid; // Hashmap: Case -> Liste d'IDs de triangles
+    double x_min, x_max, y_min, y_max;
+    double h_grid;
+    unordered_map<GridKey, vector<int>, GridKeyHash> grid;
 
     bool isPointInTriangle(array<double, 2> p, int t_idx) const;
 
 public:
-    Mesh(string gmsh2_filename); 
-    friend ostream &operator<<(ostream &os, const Mesh &m); 
+    Mesh(string gmsh2_filename);
+    friend ostream &operator<<(ostream &os, const Mesh &m);
     void writeGnuplot(const string &filename) const;
 
-    
-    void buildGrid(double step); // Construit la structure de grille
-    int findTriangleHash(array<double, 2> p) const; // Recherche accélérée
+    // Q3.2
+    int findTriangleNaive(double x, double y) const;  // ← LIGNE MANQUANTE
+
+    // Q3.3
+    void buildGrid(double step);
+    int findTriangleHash(array<double, 2> p) const;
+
+    // Q3.5
     void findVoisins() const;
     void findVoisinsNaive() const;
 };
