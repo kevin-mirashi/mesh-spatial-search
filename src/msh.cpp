@@ -305,3 +305,45 @@ void Mesh::findVoisinsNaive() const {
     cout << "Aretes internes trouvees (Naive) : " << aretes_internes_naives << endl;
     cout << "--------------------------------------------------------" << endl;
 }
+
+
+void Mesh::writeGnuplotPoint(const string& filename, double px, double py) const
+{
+    int t_idx = findTriangleNaive(px, py);
+
+    ofstream file(filename);
+    file << "set size ratio -1" << endl;
+    file << "set style line 1 lc rgb 'black' lw 1" << endl;
+    file << "set style line 2 lc rgb 'red'   lw 2" << endl;
+    file << "set style line 3 lc rgb 'blue'  pt 7 ps 2" << endl;
+
+    file << "plot '-' with lines ls 1 title 'maillage', ";
+    file << "'-' with lines ls 2 title 'triangle trouve', ";
+    file << "'-' with points ls 3 title 'point'" << endl;
+
+    // 1. Tous les triangles en noir
+    for (int i = 0; i < triangle.size(); i++) {
+        file << node[triangle[i][0]][0] << " " << node[triangle[i][0]][1] << endl;
+        file << node[triangle[i][1]][0] << " " << node[triangle[i][1]][1] << endl;
+        file << node[triangle[i][2]][0] << " " << node[triangle[i][2]][1] << endl;
+        file << node[triangle[i][0]][0] << " " << node[triangle[i][0]][1] << endl;
+        file << endl;
+    }
+    file << "e" << endl;
+
+    // 2. Le triangle contenant le point en rouge
+    if (t_idx != -1) {
+        file << node[triangle[t_idx][0]][0] << " " << node[triangle[t_idx][0]][1] << endl;
+        file << node[triangle[t_idx][1]][0] << " " << node[triangle[t_idx][1]][1] << endl;
+        file << node[triangle[t_idx][2]][0] << " " << node[triangle[t_idx][2]][1] << endl;
+        file << node[triangle[t_idx][0]][0] << " " << node[triangle[t_idx][0]][1] << endl;
+    }
+    file << "e" << endl;
+
+    // 3. Le point en bleu
+    file << px << " " << py << endl;
+    file << "e" << endl;
+
+    file << "pause -1" << endl;
+    file.close();
+}

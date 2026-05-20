@@ -108,6 +108,8 @@ int main()
     m.findVoisins();
     m.findVoisinsNaive();
     m.writeGnuplot("gnu.plt");
+    m.writeGnuplotPoint("gnu_point.plt", 0.5, 0.5);   // point dans le maillage
+    m.writeGnuplotPoint("gnu_hors.plt",  1.5, 1.5);   // point hors maillage
     
     return 0;
 }

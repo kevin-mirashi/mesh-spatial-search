@@ -45,6 +45,7 @@ public:
     Mesh(string gmsh2_filename);
     friend ostream &operator<<(ostream &os, const Mesh &m);
     void writeGnuplot(const string &filename) const;
+    void writeGnuplotPoint(const string& filename, double px, double py) const;
 
     // Q3.2
     int findTriangleNaive(double x, double y) const;  // ← LIGNE MANQUANTE
