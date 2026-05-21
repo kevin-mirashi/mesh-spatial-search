@@ -6,6 +6,7 @@
 #include <vector>
 #include <array>
 #include <unordered_map>
+#include "parallel_hashmap/phmap.h"   
 #include "predicates.hpp"
 
 using namespace std;
@@ -38,7 +39,12 @@ private:
 
     double x_min, x_max, y_min, y_max;
     double h_grid;
+
+    // Grille std::unordered_map (Q3.3)
     unordered_map<GridKey, vector<int>, GridKeyHash> grid;
+
+    // Grille phmap (Q3.4)   
+    phmap::flat_hash_map<GridKey, vector<int>, GridKeyHash> grid_phmap;
 
     bool isPointInTriangle(array<double, 2> p, int t_idx) const;
 
@@ -49,11 +55,15 @@ public:
     void writeGnuplotPoint(const string& filename, double px, double py) const;
 
     // Q3.2
-    int findTriangleNaive(double x, double y) const;  // ← LIGNE MANQUANTE
+    int findTriangleNaive(double x, double y) const;
 
     // Q3.3
     void buildGrid(double step);
     int findTriangleHash(array<double, 2> p) const;
+
+    // Q3.4  
+    void buildGridPhmap(double step);
+    int findTrianglePhmap(array<double, 2> p) const;
 
     // Q3.5
     void findVoisins() const;
