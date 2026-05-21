@@ -68,6 +68,8 @@ public:
     // Q3.5
     void findVoisins() const;
     void findVoisinsNaive() const;
+    int getNbTriangles() const { return triangle.size(); }
+
 };
 
 #endif
